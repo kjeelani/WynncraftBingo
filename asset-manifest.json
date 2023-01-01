@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/WynncraftBingo/static/css/main.63acf743.css",
-    "main.js": "/WynncraftBingo/static/js/main.c45d62ef.js",
+    "main.css": "/WynncraftBingo/static/css/main.a4de7e64.css",
+    "main.js": "/WynncraftBingo/static/js/main.27363954.js",
     "static/media/logo.png": "/WynncraftBingo/static/media/logo.6a3451aa76b8dd595720.png",
     "index.html": "/WynncraftBingo/index.html",
-    "main.63acf743.css.map": "/WynncraftBingo/static/css/main.63acf743.css.map",
-    "main.c45d62ef.js.map": "/WynncraftBingo/static/js/main.c45d62ef.js.map"
+    "main.a4de7e64.css.map": "/WynncraftBingo/static/css/main.a4de7e64.css.map",
+    "main.27363954.js.map": "/WynncraftBingo/static/js/main.27363954.js.map"
   },
   "entrypoints": [
-    "static/css/main.63acf743.css",
-    "static/js/main.c45d62ef.js"
+    "static/css/main.a4de7e64.css",
+    "static/js/main.27363954.js"
   ]
 }
