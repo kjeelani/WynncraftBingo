@@ -4,9 +4,7 @@ import BingoNode from './BingoNode';
 
 
 
-function BingoBoard() {
-    const [nodes, setNodes] = useState([]);
-    const [bingoBoard, setBoard] = useState([]);
+const BingoBoard = props => {
     const [loading, setLoading] = useState(false);
     const ref = firebase.firestore().collection("nodes");
 
@@ -14,37 +12,38 @@ function BingoBoard() {
         /*
             Input: nodes (firebase collection / dictionary) 
             
-            Output: a 5x5 matrix containing 25 randomly distibuted nodes (middle node is Free Space)
+            Output: a 5x5 matrix containing 25 nodes distributed by difficulty (middle node is Free Space)
         */
-        console.log(nodeArray);
-        let digitArray = Array.from(Array(25).keys());
-        let shuffledArray = digitArray.
-        map(value => ({ value, sort: Math.random() })).
-        sort((a, b) => a.sort - b.sort).
-        map(({ value }) => value);
-        
-        
-        var board = Array(5).fill(0).map(()=>Array(5).fill(0));
-        for(let i = 0; i < 5; i++){
-            for(let j = 0; j < 5; j++){
-                board[i][j] = nodeArray[shuffledArray[5*i+j]];
-                if(i == 2 && j == 2){
-                    board[i][j] = {task: "Free Space", difficulty: -1, id: -1}
-                }
+        function shuffle(array){
+            for (var i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
             }
+            return array;
         }
-        return board;
+        nodeArray = shuffle(nodeArray);
+        
+        var sortedChallenges = [[],[],[]];
+        var diffDistribution = {0:[12,6,6],1:[8,8,8],2:[5,10,9]};
+        for(const node in nodeArray){
+            sortedChallenges[nodeArray[node].difficulty].push(nodeArray[node]);
+        }
+        var selectedChallenges = shuffle(sortedChallenges[0].slice(0,diffDistribution[props.difficulty][0])
+                                .concat(sortedChallenges[1].slice(0,diffDistribution[props.difficulty][1]))
+                                .concat(sortedChallenges[2].slice(0,diffDistribution[props.difficulty][2])));
+        selectedChallenges.splice(12,0,{task: "Free Space", difficulty: -1});
+        return selectedChallenges;
     }
 
     function initBoard(){
+        //Query Database
         setLoading(true);
         ref.onSnapshot((querySnapshot) => {
             var nodes = [];
             querySnapshot.forEach((doc) => {
                 nodes.push(doc.data()); 
             });
-            setBoard(generateBoard(nodes));
-            setNodes(nodes);
+            props.setBoard(generateBoard(nodes));
             setLoading(false);
         });
     }
@@ -52,7 +51,7 @@ function BingoBoard() {
 
     useEffect(() => {
         initBoard();
-    }, []);
+    }, [props.difficulty]);
 
 
     if (loading) {
@@ -63,11 +62,9 @@ function BingoBoard() {
 
 
     return (
-        <div className="grid grid-rows-5 grid-flow-col gap-4 max-w-3xl text-center m-auto">
-            {bingoBoard.map(row => 
-                    row.map(node =>
-                        <BingoNode node={node}/>
-                    )
+        <div className="grid grid-rows-5 grid-flow-col max-w-4xl border-4 border-solid border-amber-900 text-center m-auto">
+            {props.bingoBoard.map(node => 
+                    <BingoNode node={node}/>
             )}
         </div>
     );
